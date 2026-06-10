@@ -133,17 +133,6 @@ docker compose -f docker-compose.yml -f docker-compose.build.yml build
 docker compose -f docker-compose.yml -f docker-compose.build.yml up -d
 ```
 
-### 3. Publish Images With GitHub Actions
-
-The repository includes `.github/workflows/docker-publish.yml`.
-
-| Trigger | Result |
-| --- | --- |
-| Push to `main` | Builds `latest` and `sha-*` images |
-| Push `v*.*.*` tags | Builds semantic version tags |
-| Default registry | Publishes to `ghcr.io/yujunzhixue/qwen2api` |
-| Docker Hub enabled | Also publishes to `yujunzhixue/qwen2api` when `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` secrets exist |
-
 ## 三、架构与配置 / Architecture and Configuration
 
 ### 1. Runtime Architecture
@@ -189,17 +178,7 @@ flowchart LR
   Docker --> App
 ```
 
-### 2. Runtime Paths
-
-| Runtime | Data Path | Logs Path |
-| --- | --- | --- |
-| Docker container | `/app/data` | `/app/logs` |
-| Docker host default | `./data` | `./logs` |
-| Local non-Docker default | current project `data` directory | current project `logs` directory |
-
-For Docker, the container always uses `/app/data` and `/app/logs`; the host path is controlled only by compose volume mappings. For local non-Docker runs, leave path environment variables empty to use the current project directory.
-
-### 3. Environment Variables
+### 2. Environment Variables
 
 Do not commit real secrets. `.env.example` intentionally contains empty values and commented examples only.
 
@@ -211,16 +190,6 @@ Do not commit real secrets. `.env.example` intentionally contains empty values a
 | `KEEPALIVE_URL`, `KEEPALIVE_INTERVAL` | Optional background keepalive task. Env values lock the same WebUI settings. |
 | `HOST_DATA_DIR`, `HOST_LOGS_DIR` | Host paths mounted into Docker as `/app/data` and `/app/logs`. Defaults are `./data` and `./logs`. |
 | `DATA_DIR`, `LOGS_DIR` | Local non-Docker path overrides. Leave empty to use the current project directory. |
-
-### 4. Default Data Files
-
-| File or Directory | Purpose |
-| --- | --- |
-| `data/accounts.json` | Qwen accounts added from WebUI |
-| `data/api_keys.json` | Downstream API keys created from WebUI |
-| `data/config.json` | Runtime settings such as keepalive config |
-| `data/context_files/` | Generated context files |
-| `logs/` | Runtime logs |
 
 ## 四、开发指南 / Development Guide
 
@@ -288,7 +257,7 @@ npm run build
 
 - `go test ./...` passes in `backend`.
 - `npm run build` passes in `frontend`.
-- Docker-related changes are reflected in `Dockerfile`, `docker-compose.yml`, `.github/workflows/docker-publish.yml`, and README when needed.
+- Docker-related changes are reflected in `Dockerfile`, `docker-compose.yml`, and README when needed.
 - No generated data, logs, local `.env`, Qwen token, cookie, password, or downstream API key is included.
 
 ### 3. Contributors

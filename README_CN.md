@@ -133,17 +133,6 @@ docker compose -f docker-compose.yml -f docker-compose.build.yml build
 docker compose -f docker-compose.yml -f docker-compose.build.yml up -d
 ```
 
-### 3. GitHub Actions 打包 Docker
-
-仓库内置 `.github/workflows/docker-publish.yml`。
-
-| 触发方式 | 结果 |
-| --- | --- |
-| 推送到 `main` | 构建 `latest` 和 `sha-*` 镜像 |
-| 推送 `v*.*.*` 标签 | 构建语义化版本镜像 |
-| 默认镜像仓库 | 发布到 `ghcr.io/yujunzhixue/qwen2api` |
-| 启用 Docker Hub | 配置 `DOCKERHUB_USERNAME` 和 `DOCKERHUB_TOKEN` 后，同时发布到 `yujunzhixue/qwen2api` |
-
 ## 三、架构与配置
 
 ### 1. 运行架构
@@ -189,17 +178,7 @@ flowchart LR
   Docker --> App
 ```
 
-### 2. 运行路径
-
-| 运行方式 | 数据目录 | 日志目录 |
-| --- | --- | --- |
-| Docker 容器内 | `/app/data` | `/app/logs` |
-| Docker 宿主机默认 | `./data` | `./logs` |
-| 本地非 Docker 默认 | 当前项目下 `data` 目录 | 当前项目下 `logs` 目录 |
-
-Docker 内部固定使用 `/app/data` 和 `/app/logs`；宿主机路径只由 compose volume 映射决定。本地非 Docker 运行时，如果路径环境变量为空，则使用当前项目目录。
-
-### 3. 环境变量
+### 2. 环境变量
 
 不要提交真实密钥。`.env.example` 只保留空值和注释示例。
 
@@ -211,16 +190,6 @@ Docker 内部固定使用 `/app/data` 和 `/app/logs`；宿主机路径只由 co
 | `KEEPALIVE_URL`、`KEEPALIVE_INTERVAL` | 可选后台保活任务；环境变量存在时会锁定 WebUI 中对应配置 |
 | `HOST_DATA_DIR`、`HOST_LOGS_DIR` | Docker 宿主机挂载路径，默认 `./data` 和 `./logs` |
 | `DATA_DIR`、`LOGS_DIR` | 本地非 Docker 路径覆盖；留空时使用当前项目目录 |
-
-### 4. 默认数据文件
-
-| 文件或目录 | 用途 |
-| --- | --- |
-| `data/accounts.json` | WebUI 添加的千问账号 |
-| `data/api_keys.json` | WebUI 创建的下游 API Key |
-| `data/config.json` | 运行配置，例如 keepalive |
-| `data/context_files/` | 生成的上下文文件 |
-| `logs/` | 运行日志 |
 
 ## 四、开发指南
 
@@ -302,11 +271,6 @@ docker compose logs -f qwen2api
 感谢所有帮助改进 qwen2API 的贡献者。
 
 [![Contributors](https://contrib.rocks/image?repo=YuJunZhiXue/qwen2API)](https://github.com/YuJunZhiXue/qwen2API/graphs/contributors)
-
-### 3. 参考项目
-
-- [LinuxDo](https://linux.do/) - 社区交流与反馈来源。
-- [anghunk/linuxdo-scripts](https://github.com/anghunk/linuxdo-scripts) - README 版式与章节组织参考。
 
 ## 六、其他信息
 
